@@ -15,14 +15,13 @@ cursor = db.cursor()
 def index(request):
     telist = wdcld(request)
     data = json.loads(telist.content)
-    print(data)
+    # print(data)
     # import requests
     # import json
     # api_request = requests.get("http://127.0.0.1:8000/list")
     # api = json.loads(api_request.content)
     # return render(request,'index.html', {"api": api})
     return render(request, 'index.html', {"data": data})
-
 # 词云
 def wdcld(request):
     try:
@@ -47,20 +46,21 @@ def wdcld(request):
         # 次数排序
         telists = list(te.items())
         telists.sort(key=lambda x: x[1], reverse=True)
-        # 输出次数前TOP20的词语
+        # 输出次数前TOP10的词语
         ranklist = []
-        for i in range(0, 20):
+        for i in range(0, 10):
             print(telists[i])
             ranklist.append(telists[i])
 
         newstr = " ".join(word_list)
         wordcloud = WordCloud(
+            background_color='white',
             font_path="C:\\Windows\\Fonts\\msyh.ttc"
         ).generate(newstr)
 
-        d = path.dirname(__file__) + '\static\image'
+        d = path.dirname(__file__) + '\static\wdcld-output'
         wordcloud.to_file(path.join(d, 'test.png'))
-
+        print(ranklist)
         res = {'msg': '操作成功', 'code': 200, 'data': ranklist}
     except:
         res = {'msg': '操作失败', 'code': 400}
@@ -85,7 +85,7 @@ def lists(request):
             objects_list.append(d)
             # print(objects_list)
 
-        res = {'msg': '查询数据成功', 'code': 400, 'data': objects_list}
+        res = {'msg': '查询数据成功', 'code': 400, 'data': len(objects_list)}
     except:
         print('出现错误')
         res = {'msg': '查询失败', 'code': 200}

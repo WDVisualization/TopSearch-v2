@@ -1,23 +1,141 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/jquery-2.1.1.min.js"></script>
+    <script src="../static/js/echart.min.js"></script>
+    <script src="../static/js/china.js"></script>
+    <script src="../static/js/map_chart.js"></script>
+    <title>Document</title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+        body{
+            background-image: url("../static/images/bg_body.jpg");
+            background-size: cover;
+            box-sizing: border-box;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-1 {
+            flex: 1;
+        }
+        .flex-column{
+            flex-direction: column;
+        }
+        .flex-row{
+            flex-direction: row;
+        }
+        .jc-sa{
+            justify-content: space-around;
+        }
+
+        #content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: nowrap;
+        }
+        #content>div>div{
+            margin: 10px;
+            {#box-sizing: border-box;#}
+            box-shadow: 0 0 10px lightblue;
+            background-color: rgba(255,255,255,.1);
+        }
+        .border{
+            border: 1px solid gold;
+        }
+        .white{
+            color: #ffffff;
+        }
+        .font{
+            font-size: 24px;
+        }
+        .text-center{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    <div id="content">
+        <div class="left flex-1 flex flex-column jc-sa">
+            <div class="border" style="height: 140px">
+                <p class="white text-center font">截止目前数据总数</p>
+                <p class="white text-center font" id="total"></p>
+            </div>
+            <div class="border flex-1 flex" style="align-items: center;justify-content: center">
+                <img src="../static/wdcld-output/test.png" style="border-radius: 10px" alt="">
+            </div>
+            <div class="border flex-1" style="position: relative">
+                <div id="chart" class="flex flex-row jc-sa" style="flex-wrap: nowrap;position: relative">
+                    <ul id="numbers" style="position: absolute;left: -60px;bottom: -20px">
+                        <li><span>100%</span></li>
+                        <li><span>90%</span></li>
+                        <li><span>80%</span></li>
+                        <li><span>70%</span></li>
+                        <li><span>60%</span></li>
+                        <li><span>50%</span></li>
+                        <li><span>40%</span></li>
+                        <li><span>30%</span></li>
+                        <li><span>20%</span></li>
+                        <li><span>10%</span></li>
+                        <li><span>0%</span></li>
+                    </ul>
 
-    {% for item in data.data %}
-    <p>{{ item }}</p>
-    {% endfor %}
+                    <ul id="bars" style="position: absolute;bottom: -20px;left: -50px">
+                        {% for item in data.data %}
 
+                        <li><div data-percentage="56" class="bar"></div><span>1</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="center flex flex-column jc-sa" style="width: 40%">
+            <div class="border" style="height: 200px">
 
-    <img src="../static/image/test.png">
+            </div>
+            <div class="border flex-1">
+                <div id="map" style="width: 100%;height: 100%;"></div>
+            </div>
+        </div>
+        <div class="right flex-1 flex flex-column jc-sa">
+            <div class="border flex-1"></div>
+            <div class="border flex-1"></div>
+            <div class="border flex-1"></div>
+        </div>
+    </div>
     <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
     <script>
-    {#axios.get('/lists')#}
-    {#  .then(res => console.log(res.data))#}
-    {#  .catch(err => console.log(err));#}
+        $(function() {
+          $("#bars li .bar").each( function( key, bar ) {
+            var percentage = $(this).data('percentage');
+
+            $(this).animate({
+              'height' : percentage + '%'
+            }, 1000);
+          });
+        });
+        axios.get('/lists')
+        .then(res => {
+            $('#total').html(res.data.data)
+        })
+        .catch(err => console.log(err));
+        {#axios.get('/wdcld')#}
+        {#.then(res => {#}
+        {#    console.log(res.data)#}
+        {#})#}
+        {#.catch(err => console.log(err));#}
     </script>
 </body>
 </html>
