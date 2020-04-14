@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>前二十位热搜分析</title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        td{
+            padding: 20px;
+            cursor: pointer;
+        }
+        #chartmain{
+            width: 620px;
+            height:500px;
+            position: fixed !important;
+            top: 100px !important;
+            right: 100px !important;
+        }
+    </style>
+    <table id="tab" border="1"></table>
+    <div id="chartmain"></div>
+</head>
+<body>
+
+<script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/4.7.0/echarts.min.js"></script>
+<script type="text/javascript">
+    window.onload = function (){
+		//指定图表的配置项和数据
+		option = {
+		    title: {
+                text: '微博热搜前二十变化趋势'
+            },
+            tooltip: {},
+            legend: {
+                data:['热度']
+            },
+            xAxis: {
+                name:"周期",
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+		        name:"热度",
+                data: [0, 0, 0, 0, 0, 0, 0],
+                type: 'line',
+                smooth: true
+            }]
+        };
+
+        //获取dom容器
+        var myChart = echarts.init(document.getElementById('chartmain'));
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+</script>
+<script>
+    var objarr = [];
+    var html = "<tr><th>关键词</th><th>热度</th><th>链接</th></tr>";
+    axios.get('/toptwenty')
+    .then(res => {
+        objarr = res.data.data;
+    }).then(res=>{
+        console.log(objarr)
+        for (let i = 0; i < objarr.length; i++) {
+            html += '<tr><td class="flow">' + objarr[i].keywords +  '</td><td>' + objarr[i].flow + '</td><td><a href="' + objarr[i].url + '">跳转链接</a></td></tr>';
+        }
+        document.querySelector("#tab").innerHTML = html;
+    }).then(res=>{
+        var ftds = document.querySelectorAll('.flow');
+        for (let i = 0; i < ftds.length; i++) {
+            ftds[i].addEventListener('click',function(){
+                let kwd = ftds[i].innerText;
+                axios.get('/changelists',{
+                    params:{
+                        keywords:"'"+kwd+"'"
+                    }
+                })
+                .then(res => {
+                    let arr = res.data.data;
+                    let flowarr = [];
+                    let timearr = [];
+                    let text = [];
+                    for (let i = 0; i < arr.length; i++) {
+                        flowarr.push(arr[i].flow);
+                        timearr.push(arr[i].created_at.split(" ")[0].replace(/-/g,"/"));
+                        text.push(arr[i].keywords);
+                    }
+                    console.log(flowarr,timearr);
+                    option = {
+                        title: {
+                            text: text[0]
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['热度']
+                        },
+                        xAxis: {
+                            name:"周期",
+                            type: 'category',
+                            data: timearr
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            name:"热度",
+                            data: flowarr,
+                            type: 'line',
+                            smooth: true
+                        }]
+                    };
+                    echarts.init(document.getElementById('chartmain')).setOption(option);
+                })
+                .catch(err => console.log(err));
+
+            })
+        }
+    })
+    .catch(err => console.log(err));
+
+
+
+</script>
+</body>
+</html>

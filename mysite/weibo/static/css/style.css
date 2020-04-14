@@ -67,3 +67,85 @@
   left: 0;
   text-align: center;
 }
+/*时钟*/
+.clock{
+  width: 160px;
+  height: 160px;
+  margin-left: 20px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../images/clock.png");
+  background-size: cover;
+  border: 4px solid #091921;
+  border-radius: 50%;
+  box-shadow: 0 -15px 15px rgba(255, 255, 255, .05),
+              inset 0 -15px 15px rgba(255, 255, 255, .05),
+              0 -15px 15px rgba(0, 0, 0, .3),
+              inset 0 -15px 15px rgba(0, 0, 0, .3);
+}
+.clock::before{
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 50%;
+  z-index: 1000;
+}
+.clock .hour,
+.clock .min,
+.clock .sec
+{
+  position: absolute;
+}
+.clock .hour .hr {
+  width: 80px;
+  height: 80px;
+}
+.clock .min .mn {
+  width: 110px;
+  height: 110px;
+}
+.clock .sec .sc {
+  width:136px;
+  height: 136px;
+}
+.hr,.mn,.sc {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  position: absolute;
+  transform: translate(-50%,-50%);
+  border-radius: 50%;
+}
+.hr::before{
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 40px;
+  background-color: red;
+  z-index: 10;
+  border-radius: 6px 6px 0 0;
+}
+.mn::before{
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 56px;
+  background-color: #000000;
+  z-index: 11;
+  border-radius: 6px 6px 0 0;
+}
+.sc::before{
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 86px;
+  background-color: #000000;
+  z-index: 12;
+  border-radius: 6px 6px 0 0;
+}
+
